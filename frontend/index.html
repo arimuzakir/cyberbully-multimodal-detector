@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="theme-color" content="#059669"/>
+  <title>CyberBully Detector — Portal Deteksi Perundungan Siber</title>
+  <meta name="description" content="Sistem deteksi perundungan siber real-time multimodal berbasis AI (IndoBERT + mBERT + Whisper + EfficientNet + Stacking)"/>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=Source+Code+Pro:wght@500;600&display=swap" rel="stylesheet"/>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css?v=3.1"/>
+</head>
+<body>
+  <!-- ═══════════════════════════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="brand-icon">🛡️</div>
+        <div>
+          <h1 class="brand-title">CyberBully Detector</h1>
+          <div class="brand-subtitle">Model Multimodal · Teks, Audio & Visual</div>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <a href="cyberbully-extension.zip" download="cyberbully-extension-v11.zip" class="btn-download-ext" id="nav-download-btn" title="Download Chrome / Edge / Brave / Kiwi Extension">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Unduh Ekstensi</span>
+        </a>
+        <div class="status-badge" id="api-status-badge">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Menghubungkan...</span>
+        </div>
+        <div class="model-badge" id="model-mode-badge">—</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HERO: 3 KARTU MENU UTAMA (Menuju Halaman Masing-Masing)
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="hero-section">
+    <h2 class="hero-title">Pilih Sumber Data untuk Dianalisis</h2>
+    <p class="hero-subtitle">Pilih metode input yang ingin Anda gunakan untuk menguji data secara real-time</p>
+
+    <div class="cards-grid">
+      <!-- KARTU 1: Halaman Input Manual -->
+      <a href="manual.html" class="blue-card" style="text-decoration:none;">
+        <div class="card-icon-box">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+          </svg>
+        </div>
+        <h3 class="card-title">Input Manual</h3>
+        <p class="card-desc">Ketik atau tempel ulasan / komentar secara langsung</p>
+        <span class="card-btn-orange">
+          Tulis Ulasan →
+        </span>
+      </a>
+
+      <!-- KARTU 2: Halaman Upload File & Media -->
+      <a href="upload.html" class="blue-card" style="text-decoration:none;">
+        <div class="card-icon-box">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+        </div>
+        <h3 class="card-title">Upload File & Media</h3>
+        <p class="card-desc">Unggah file Video, Audio, Dokumen Excel, CSV, atau PDF</p>
+        <span class="card-btn-orange">
+          Upload File →
+        </span>
+      </a>
+
+      <!-- KARTU 3: Halaman Dari Link / Sosmed -->
+      <a href="social.html" class="blue-card" style="text-decoration:none;">
+        <div class="card-icon-box">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+        </div>
+        <h3 class="card-title">Dari Link / Sosmed</h3>
+        <p class="card-desc">Paste link YouTube, Twitter, IG, Facebook secara langsung</p>
+        <span class="card-btn-orange">
+          Dari Link / Sosmed →
+        </span>
+      </a>
+    </div>
+
+    <!-- ── EXTENSION PROMO & 1-CLICK DOWNLOAD BANNER ── -->
+    <div class="extension-promo-card">
+      <div class="ext-promo-left">
+        <div class="ext-badge-pill">🔥 REAL-TIME SOCIAL MEDIA SCANNER</div>
+        <h3 class="ext-promo-title">Pasang Ekstensi Browser CyberBully Detector V11</h3>
+        <p class="ext-promo-desc">
+          Deteksi otomatis komentar & video perundungan siber langsung di <strong>YouTube, Instagram, Twitter/X, TikTok, & Facebook</strong>. Buka balasan sampai ke akar dengan 1-klik!
+        </p>
+        <div class="ext-os-support">
+          <span>Kompatibel:</span>
+          <span class="os-chip">🪟 Windows</span>
+          <span class="os-chip">🍎 macOS</span>
+          <span class="os-chip">🌐 Chrome/Edge/Brave</span>
+          <span class="os-chip">📱 Android (Kiwi Browser)</span>
+        </div>
+      </div>
+      <div class="ext-promo-right">
+        <a href="cyberbully-extension.zip" download="cyberbully-extension-v11.zip" class="btn-ext-download-main" id="hero-download-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Download Ekstensi (.ZIP)</span>
+        </a>
+        <button class="btn-ext-guide" onclick="openExtensionModal()">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>Panduan Pasang</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MODAL PANDUAN INSTALASI EKSTENSI
+  ══════════════════════════════════════════════════════════════════ -->
+  <div class="ext-modal-overlay" id="ext-guide-modal" style="display:none;" onclick="if(event.target===this) closeExtensionModal()">
+    <div class="ext-modal-card">
+      <div class="ext-modal-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:24px;">🧩</span>
+          <div>
+            <h3 class="ext-modal-title">Panduan Pemasangan Ekstensi Browser</h3>
+            <p class="ext-modal-sub">Ikuti 4 langkah mudah berikut untuk mengaktifkan deteksi real-time</p>
+          </div>
+        </div>
+        <button class="ext-modal-close" onclick="closeExtensionModal()">✕</button>
+      </div>
+
+      <!-- OS Tabs -->
+      <div class="modal-tab-bar">
+        <button class="modal-tab-btn active" id="mtab-desktop" onclick="switchGuideTab('desktop')">💻 Desktop (Windows / macOS / Linux)</button>
+        <button class="modal-tab-btn" id="mtab-mobile" onclick="switchGuideTab('mobile')">📱 Mobile (Android Kiwi Browser)</button>
+        <button class="modal-tab-btn" id="mtab-ios" onclick="switchGuideTab('ios')">🍏 iOS (iPhone & iPad)</button>
+      </div>
+
+      <!-- Desktop Guide -->
+      <div class="guide-content-pane" id="gpane-desktop">
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-title">Unduh & Ekstrak File</div>
+            <p class="step-text">Klik tombol download di bawah dan ekstrak file <code>cyberbully-extension.zip</code> ke folder di komputer Anda.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-title">Buka Halaman Ekstensi</div>
+            <p class="step-text">Di Google Chrome / MS Edge / Brave, ketik di address bar: <code>chrome://extensions</code> atau <code>edge://extensions</code>.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-title">Aktifkan Developer Mode</div>
+            <p class="step-text">Nyalakan toggle <strong>Developer mode</strong> (Mode pengembang) di sudut kanan atas layar browser.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <div class="step-title">Load Unpacked</div>
+            <p class="step-text">Klik tombol <strong>"Load unpacked"</strong> di kiri atas, lalu pilih folder ekstensi yang sudah diekstrak tadi. Selesai!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Android Guide -->
+      <div class="guide-content-pane" id="gpane-mobile" style="display:none;">
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-title">Download Kiwi Browser</div>
+            <p class="step-text">Pasang <strong>Kiwi Browser</strong> atau <strong>Yandex Browser</strong> gratis dari Google Play Store.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-title">Unduh ZIP Ekstensi</div>
+            <p class="step-text">Download file <code>cyberbully-extension.zip</code> langsung melalui smartphone Anda.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-title">Masuk Menu Ekstensi</div>
+            <p class="step-text">Buka menu titik tiga di Kiwi Browser ➔ pilih <strong>Extensions</strong> ➔ aktifkan <strong>Developer Mode</strong>.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <div class="step-title">Muat File ZIP</div>
+            <p class="step-text">Klik <strong>"+ (from .zip/.crx/.user.js)"</strong> dan pilih file zip yang sudah diunduh. Ekstensi siap memindai sosmed!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- iOS Note -->
+      <div class="guide-content-pane" id="gpane-ios" style="display:none;">
+        <div class="ios-info-card">
+          <div style="font-size:32px;margin-bottom:8px;">📱</div>
+          <h4 style="font-size:16px;font-weight:700;color:var(--text-main);margin-bottom:6px;">Dukungan Penuh Web Mobile di iOS (iPhone / iPad)</h4>
+          <p style="font-size:13.5px;color:var(--text-muted);line-height:1.6;margin-bottom:14px;">
+            Kebijakan Apple iOS membatasi ekstensi Chromium. Namun Anda dapat menggunakan <strong>seluruh fitur analisis CyberBully Detector secara instan di Safari iOS</strong>:
+          </p>
+          <ul style="text-align:left;max-width:520px;margin:0 auto 16px;font-size:13px;color:var(--text-main);line-height:1.8;">
+            <li>✅ <strong>Input Manual:</strong> Ketik komentar & atur slider sentimen sentuh.</li>
+            <li>✅ <strong>Upload Video & Gambar:</strong> Ambil langsung dari Galeri Foto / Kamera iPhone.</li>
+            <li>✅ <strong>Rekam Mikrofon:</strong> Rekam suara langsung via browser Safari iOS dengan audio codec terintegrasi.</li>
+            <li>✅ <strong>Paste Link Sosmed:</strong> Salin URL postingan sosmed dan uji secara real-time.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="ext-modal-footer">
+        <a href="cyberbully-extension.zip" download="cyberbully-extension-v11.zip" class="btn-ext-download-main" style="padding:10px 22px;font-size:13.5px;">
+          <span>📥</span> Download File ZIP Ekstensi
+        </a>
+        <button class="btn-modal-done" onclick="closeExtensionModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MODEL EVALUATION OVERVIEW (Beranda)
+  ══════════════════════════════════════════════════════════════════ -->
+  <main class="workspace-container" style="grid-template-columns: 1fr;">
+    <section class="white-panel">
+      <div class="panel-title-area" style="margin-bottom:16px;">
+        <span class="panel-badge-tag">📊 EVALUASI PERFORMA MODEL (V12 SOTA 2026)</span>
+        <h2 class="panel-heading">Grafik Evaluasi Model AI Multimodal</h2>
+        <p class="panel-desc">Perbandingan metrik F1-Score, Akurasi, dan AUC-ROC pada 5-Fold Stratified Cross-Validation (N = 13.307 Data Asli Non-Augmented)</p>
+      </div>
+
+      <div class="scores-card" style="background:var(--bg-surface);border:1px solid var(--border-color);margin-bottom:16px;">
+        <div class="chart-box" style="height:230px;">
+          <canvas id="model-eval-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="welcome-stats-row" style="gap:10px;justify-content:space-between;">
+        <div class="w-stat-card" style="flex:1;">
+          <div class="w-stat-val" style="color:var(--text-main);">88.08%</div>
+          <div class="w-stat-lbl">IndoBERT Base</div>
+        </div>
+        <div class="w-stat-card" style="flex:1;">
+          <div class="w-stat-val" style="color:var(--text-main);">85.43%</div>
+          <div class="w-stat-lbl">IndoBERT-Tweet</div>
+        </div>
+        <div class="w-stat-card" style="flex:1;">
+          <div class="w-stat-val" style="color:var(--text-main);">84.06%</div>
+          <div class="w-stat-lbl">Transcript Audio</div>
+        </div>
+        <div class="w-stat-card" style="flex:1;">
+          <div class="w-stat-val" style="color:var(--text-main);">88.46%</div>
+          <div class="w-stat-lbl">HEALNet 2024 (SOTA)</div>
+        </div>
+        <div class="w-stat-card" style="flex:1;border:2px solid var(--primary-blue);background:var(--primary-badge-bg);">
+          <div class="w-stat-val" style="color:var(--primary-blue);">🏆 88.42%</div>
+          <div class="w-stat-lbl" style="color:var(--primary-blue);font-weight:700;">TRI-MODAL MLP</div>
+        </div>
+      </div>
+
+      <div class="notice-box" style="margin-top:16px;margin-bottom:0;">
+        💡 <strong>Arsitektur V12 Tri-modal Late Fusion Stacking MLP:</strong> Model usulan tesis menggabungkan representasi teks kontekstual (IndoBERT/IndoBERTweet), intonasi ucapan transkrip audio, dan fitur visual dengan fusi <em>Late Fusion Stacking MLP (Seed 44)</em> serta <em>Graceful Degradation Fallback (Text MLP)</em> (Akurasi 89.43%, ROC-AUC 0.9576, PR-AUC 0.9213).
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js?v=3.1"></script>
+</body>
+</html>

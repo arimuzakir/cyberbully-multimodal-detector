@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberBully Detector — View Page Source (Live DOM)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="source-viewer.css"/>
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="sv-header">
+    <div class="sv-brand">
+      <div class="sv-logo">📄</div>
+      <div>
+        <h1 class="sv-title">Live DOM Page Source Viewer</h1>
+        <div class="sv-meta" id="sv-meta">Memuat data source...</div>
+      </div>
+    </div>
+
+    <!-- Search & Actions -->
+    <div class="sv-toolbar">
+      <div class="sv-search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="sv-search" placeholder="Cari teks / tag HTML..."/>
+        <span class="sv-match-count" id="sv-match-count"></span>
+      </div>
+
+      <button class="sv-btn sv-btn-primary" id="btn-copy">
+        <span>📋</span> Salin Semua
+      </button>
+
+      <button class="sv-btn sv-btn-secondary" id="btn-download">
+        <span>💾</span> Unduh .html
+      </button>
+
+      <button class="sv-btn sv-btn-ghost" id="btn-native" title="Buka view-source bawaan Chrome">
+        <span>🌐</span> Native Source
+      </button>
+    </div>
+  </header>
+
+  <!-- URL Banner -->
+  <div class="sv-url-bar">
+    <span class="sv-url-label">URL:</span>
+    <a href="#" target="_blank" class="sv-url-link" id="sv-url-link">—</a>
+    <span class="sv-badge" id="sv-size-badge">0 KB</span>
+    <span class="sv-badge" id="sv-lines-badge">0 baris</span>
+    <span class="sv-badge platform" id="sv-platform-badge">Universal</span>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="sv-toast" id="sv-toast">Berhasil disalin!</div>
+
+  <!-- Code Container -->
+  <main class="sv-main">
+    <div class="sv-code-container">
+      <pre class="sv-code-pre"><code id="sv-code-content">Memuat kode sumber...</code></pre>
+    </div>
+  </main>
+
+  <script src="source-viewer.js"></script>
+</body>
+</html>

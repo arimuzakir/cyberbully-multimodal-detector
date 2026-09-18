@@ -1,0 +1,226 @@
+/* ═══════════════════════════════════════════════════════════════════
+   SOURCE VIEWER STYLES
+   Modern Developer Dark/Warm Syntax Viewer
+   ═══════════════════════════════════════════════════════════════════ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #18181B;
+  color: #E4E4E7;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.sv-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: #27272A;
+  border-bottom: 1px solid #3F3F46;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sv-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sv-logo {
+  font-size: 24px;
+}
+
+.sv-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.sv-meta {
+  font-size: 11.5px;
+  color: #A1A1AA;
+}
+
+.sv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sv-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #18181B;
+  border: 1px solid #3F3F46;
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #E4E4E7;
+}
+
+.sv-search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #FFFFFF;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  width: 180px;
+}
+
+.sv-search-box input::placeholder {
+  color: #71717A;
+}
+
+.sv-match-count {
+  font-size: 11px;
+  color: #A1A1AA;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.sv-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+}
+
+.sv-btn-primary {
+  background: #059669;
+  color: #FFFFFF;
+}
+.sv-btn-primary:hover { background: #047857; }
+
+.sv-btn-secondary {
+  background: #3F3F46;
+  color: #FFFFFF;
+  border-color: #52525B;
+}
+.sv-btn-secondary:hover { background: #52525B; }
+
+.sv-btn-ghost {
+  background: transparent;
+  color: #A1A1AA;
+  border-color: #3F3F46;
+}
+.sv-btn-ghost:hover {
+  background: #3F3F46;
+  color: #FFFFFF;
+}
+
+/* ── URL Bar ─────────────────────────────────────────────────── */
+.sv-url-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  background: #1F1F23;
+  border-bottom: 1px solid #2E2E33;
+  font-size: 11.5px;
+}
+
+.sv-url-label {
+  font-weight: 700;
+  color: #71717A;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sv-url-link {
+  color: #34D399;
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 600px;
+}
+.sv-url-link:hover { text-decoration: underline; }
+
+.sv-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #27272A;
+  border: 1px solid #3F3F46;
+  color: #D4D4D8;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+}
+
+.sv-badge.platform {
+  background: #064E3B;
+  color: #6EE7B7;
+  border-color: #059669;
+  margin-left: auto;
+}
+
+/* ── Main Code Viewer ────────────────────────────────────────── */
+.sv-main {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 20px;
+  background: #09090B;
+}
+
+.sv-code-container {
+  min-width: 100%;
+}
+
+.sv-code-pre {
+  margin: 0;
+  font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #E4E4E7;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.sv-code-pre mark {
+  background: #F59E0B;
+  color: #000000;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* ── Toast ───────────────────────────────────────────────────── */
+.sv-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #059669;
+  color: #FFFFFF;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+}
+
+.sv-toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}

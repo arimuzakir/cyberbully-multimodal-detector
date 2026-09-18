@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 60
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,OPTIONS,HEAD" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index.py" },
+    { "source": "/predict", "destination": "/api/index.py" },
+    { "source": "/predict-batch", "destination": "/api/index.py" },
+    { "source": "/predict-pdf", "destination": "/api/index.py" },
+    { "source": "/predict-excel", "destination": "/api/index.py" },
+    { "source": "/predict-url", "destination": "/api/index.py" },
+    { "source": "/predict-audio", "destination": "/api/index.py" },
+    { "source": "/predict-image", "destination": "/api/index.py" },
+    { "source": "/predict-video", "destination": "/api/index.py" },
+    { "source": "/predict-multimodal", "destination": "/api/index.py" },
+    { "source": "/download-extension", "destination": "/api/index.py" },
+    { "source": "/health", "destination": "/api/index.py" },
+    { "source": "/", "destination": "/frontend/index.html" },
+    { "source": "/manual", "destination": "/frontend/manual.html" },
+    { "source": "/upload", "destination": "/frontend/upload.html" },
+    { "source": "/social", "destination": "/frontend/social.html" },
+    { "source": "/:match*", "destination": "/frontend/:match*" }
+  ]
+}

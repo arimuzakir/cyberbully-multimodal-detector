@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "CyberBully Detector V12 SOTA",
+  "short_name": "CyberBully",
+  "description": "Deteksi perundungan siber secara real-time pada YouTube, Instagram, Twitter/X, Facebook, TikTok menggunakan model AI Multimodal V12 SOTA (F1=88.42%, N=13.307)",
+  "version": "1.2.0",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs",
+    "clipboardWrite",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "http://localhost:8000/*",
+    "https://muzakir17-cyberbully-v12.hf.space/*",
+    "*://*.hf.space/*",
+    "*://*.youtube.com/*",
+    "*://*.twitter.com/*",
+    "*://*.x.com/*",
+    "*://*.instagram.com/*",
+    "*://*.facebook.com/*",
+    "*://*.tiktok.com/*",
+    "*://*.threads.net/*",
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*.png", "source-viewer.html", "source-viewer.css", "source-viewer.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
