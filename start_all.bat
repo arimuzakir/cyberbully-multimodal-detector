@@ -11,7 +11,7 @@ start "CyberBully Detector API (Port 8000)" cmd /k "cd /d %~dp0backend && python
 
 echo.
 echo  2. Menjalankan Web Frontend Server (Port 5500)...
-start "CyberBully Detector Web (Port 5500)" cmd /k "cd /d %~dp0frontend && python -m http.server 5500"
+start "CyberBully Detector Web (Port 5500)" cmd /k "cd /d %~dp0public && python -m http.server 5500"
 
 timeout /t 3 /nobreak >nul
 

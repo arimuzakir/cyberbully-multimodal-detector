@@ -493,8 +493,8 @@ async def websocket_stream(websocket: WebSocket):
 
 # ── Download Extension ZIP ───────────────────────────────────────────────────
 EXTENSION_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "extension"))
-FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend"))
-EXTENSION_ZIP = os.path.join(FRONTEND_DIR, "cyberbully-extension.zip")
+PUBLIC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "public"))
+EXTENSION_ZIP = os.path.join(PUBLIC_DIR, "cyberbully-extension.zip")
 
 def build_extension_zip():
     try:
@@ -584,15 +584,11 @@ async def serve_social():
     raise HTTPException(404, "social.html not found")
 
 # Coba mount static directory jika tersedia
-for s_dir in [os.path.join(os.getcwd(), "public"), FRONTEND_DIR]:
-    if os.path.exists(s_dir):
-        try:
-            app.mount("/static", StaticFiles(directory=s_dir), name="static")
-            break
-        except Exception:
-            pass
-
-# ── Run ───────────────────────────────────────────────────────────────────────
+if os.path.exists(PUBLIC_DIR):
+    try:
+        app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
+    except Exception:
+        pass
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
