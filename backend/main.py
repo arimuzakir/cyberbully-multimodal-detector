@@ -548,7 +548,9 @@ async def debug_catch_all(request: Request, full_path: str):
         "method": request.method,
         "url_path": request.url.path,
         "scope_path": request.scope.get("path"),
-        "full_path": full_path
+        "full_path": full_path,
+        "headers": dict(request.headers),
+        "query": dict(request.query_params)
     }, status_code=404)
 
 # ── Run ───────────────────────────────────────────────────────────────────────
