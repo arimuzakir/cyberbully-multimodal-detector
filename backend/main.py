@@ -538,6 +538,19 @@ for s_dir in [os.path.join(os.getcwd(), "public"), FRONTEND_DIR]:
         except Exception:
             pass
 
+# ── Catch-All Debug & Fallback Route ──────────────────────────────────────────
+from fastapi import Request
+
+@app.api_route("/{full_path:path}", methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"])
+async def debug_catch_all(request: Request, full_path: str):
+    return JSONResponse({
+        "status": "catch_all_debug",
+        "method": request.method,
+        "url_path": request.url.path,
+        "scope_path": request.scope.get("path"),
+        "full_path": full_path
+    }, status_code=404)
+
 # ── Run ───────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     import uvicorn
