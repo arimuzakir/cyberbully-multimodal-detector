@@ -26,7 +26,7 @@ from typing import Optional
 import pandas as pd
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -478,13 +478,65 @@ async def download_extension():
         )
     raise HTTPException(404, "Extension archive not found")
 
-# ── Static Files (Frontend Web Dashboard) ────────────────────────────────────
-if os.path.exists(FRONTEND_DIR):
-    @app.get("/")
-    async def serve_index():
-        return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+# ── Static Files & HTML Pages Serving ─────────────────────────────────────────
+def _get_html_content(filename: str) -> Optional[str]:
+    search_dirs = [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "public")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend")),
+        os.path.abspath(os.path.join(os.getcwd(), "public")),
+        os.path.abspath(os.path.join(os.getcwd(), "frontend")),
+        os.path.join("/var/task", "public"),
+        os.path.join("/var/task", "frontend"),
+    ]
+    for d in search_dirs:
+        target = os.path.join(d, filename)
+        if os.path.exists(target):
+            try:
+                with open(target, "r", encoding="utf-8") as f:
+                    return f.read()
+            except Exception:
+                pass
+    return None
 
-    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+@app.get("/", response_class=HTMLResponse)
+async def serve_index():
+    content = _get_html_content("index.html")
+    if content:
+        return HTMLResponse(content=content)
+    return HTMLResponse("<h1>CyberBully Detector V12 SOTA</h1><p>API Server is running.</p>")
+
+@app.get("/manual.html", response_class=HTMLResponse)
+@app.get("/manual", response_class=HTMLResponse)
+async def serve_manual():
+    content = _get_html_content("manual.html")
+    if content:
+        return HTMLResponse(content=content)
+    raise HTTPException(404, "manual.html not found")
+
+@app.get("/upload.html", response_class=HTMLResponse)
+@app.get("/upload", response_class=HTMLResponse)
+async def serve_upload():
+    content = _get_html_content("upload.html")
+    if content:
+        return HTMLResponse(content=content)
+    raise HTTPException(404, "upload.html not found")
+
+@app.get("/social.html", response_class=HTMLResponse)
+@app.get("/social", response_class=HTMLResponse)
+async def serve_social():
+    content = _get_html_content("social.html")
+    if content:
+        return HTMLResponse(content=content)
+    raise HTTPException(404, "social.html not found")
+
+# Coba mount static directory jika tersedia
+for s_dir in [os.path.join(os.getcwd(), "public"), FRONTEND_DIR]:
+    if os.path.exists(s_dir):
+        try:
+            app.mount("/static", StaticFiles(directory=s_dir), name="static")
+            break
+        except Exception:
+            pass
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":

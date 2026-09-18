@@ -1,0 +1,11 @@
+﻿# Build artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# Local server files
+uploads/
+*.log
+
+# Extension zip (rebuild on demand)
+cyberbully-extension.zip
