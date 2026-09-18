@@ -510,13 +510,25 @@ def build_extension_zip():
         logger.error(f"Failed to package extension zip: {e}")
 
 @app.get("/download-extension")
+@app.get("/api/download-extension")
 async def download_extension():
+    for zpath in [
+        os.path.join(os.getcwd(), "public", "cyberbully-extension.zip"),
+        os.path.join(os.path.dirname(__file__), "..", "public", "cyberbully-extension.zip"),
+        EXTENSION_ZIP
+    ]:
+        if os.path.exists(zpath):
+            return FileResponse(
+                zpath,
+                media_type="application/zip",
+                filename="cyberbully-extension-v12.zip"
+            )
     build_extension_zip()
     if os.path.exists(EXTENSION_ZIP):
         return FileResponse(
             EXTENSION_ZIP,
             media_type="application/zip",
-            filename="cyberbully-extension-v11.zip"
+            filename="cyberbully-extension-v12.zip"
         )
     raise HTTPException(404, "Extension archive not found")
 
