@@ -1,9 +1,12 @@
-﻿// popup.js â€” CyberBully Detector Extension Popup Logic
+// popup.js — CyberBully Detector Extension Popup Logic
 
-const API_BASE = 'https://muzakir17-cyberbully-v12.hf.space'; // Production HF Space
+const VERCEL_API_URL = 'https://cyberbully-multimodal-detector.vercel.app';
+let API_BASE = VERCEL_API_URL;
 
-let stats = { scanned: 0, bullying: 0, safe: 0 };
-let recentItems = [];
+// Muat custom endpoint jika diubah pengguna
+chrome.storage?.local?.get(['apiUrl'], (res) => {
+  if (res && res.apiUrl) API_BASE = res.apiUrl;
+});
 
 // â”€â”€ DOM Initialization â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.addEventListener('DOMContentLoaded', async () => {

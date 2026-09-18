@@ -1,8 +1,21 @@
-﻿// background.js â€” Service Worker untuk CyberBully Detector Extension
+// background.js — Service Worker untuk CyberBully Detector Extension
 
-// API Base: production HF Space (fallback ke localhost untuk pengembangan lokal)
-const HF_SPACE_URL = 'https://muzakir17-cyberbully-v12.hf.space';
-const API_BASE = HF_SPACE_URL; // Untuk produksi. Ubah ke 'http://localhost:8000' untuk dev lokal.
+// Default API Base ke Vercel Cloud (dapat diganti dinamis via chrome.storage atau localhost)
+const VERCEL_API_URL = 'https://cyberbully-multimodal-detector.vercel.app';
+let API_BASE = VERCEL_API_URL;
+
+// Baca preferensi endpoint dari storage (jika pengguna mengubah ke localhost di popup)
+chrome.storage?.local?.get(['apiUrl'], (res) => {
+  if (res && res.apiUrl) {
+    API_BASE = res.apiUrl;
+  }
+});
+chrome.storage?.onChanged?.addListener((changes, area) => {
+  if (area === 'local' && changes.apiUrl) {
+    API_BASE = changes.apiUrl.newValue;
+    console.log('[CBD BG] API endpoint updated to:', API_BASE);
+  }
+});
 
 // â”€â”€ Request Queue (hindari spam API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const queue      = [];

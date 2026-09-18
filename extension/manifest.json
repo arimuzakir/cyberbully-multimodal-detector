@@ -14,8 +14,7 @@
   ],
   "host_permissions": [
     "http://localhost:8000/*",
-    "https://muzakir17-cyberbully-v12.hf.space/*",
-    "*://*.hf.space/*",
+    "https://*.vercel.app/*",
     "*://*.youtube.com/*",
     "*://*.twitter.com/*",
     "*://*.x.com/*",

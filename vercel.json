@@ -26,6 +26,8 @@
     { "source": "/predict-image", "destination": "/api/index.py" },
     { "source": "/predict-video", "destination": "/api/index.py" },
     { "source": "/predict-multimodal", "destination": "/api/index.py" },
+    { "source": "/predict-frame", "destination": "/api/index.py" },
+    { "source": "/extension/:path*", "destination": "/api/index.py" },
     { "source": "/download-extension", "destination": "/api/index.py" },
     { "source": "/health", "destination": "/api/index.py" },
     { "source": "/", "destination": "/frontend/index.html" },
