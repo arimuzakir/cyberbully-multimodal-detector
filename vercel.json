@@ -15,20 +15,13 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/index.py" },
-    { "source": "/predict", "destination": "/api/index.py" },
-    { "source": "/predict-batch", "destination": "/api/index.py" },
-    { "source": "/predict-pdf", "destination": "/api/index.py" },
-    { "source": "/predict-excel", "destination": "/api/index.py" },
-    { "source": "/predict-url", "destination": "/api/index.py" },
-    { "source": "/predict-audio", "destination": "/api/index.py" },
-    { "source": "/predict-image", "destination": "/api/index.py" },
-    { "source": "/predict-video", "destination": "/api/index.py" },
-    { "source": "/predict-multimodal", "destination": "/api/index.py" },
-    { "source": "/predict-frame", "destination": "/api/index.py" },
-    { "source": "/extension/:path*", "destination": "/api/index.py" },
-    { "source": "/download-extension", "destination": "/api/index.py" },
-    { "source": "/health", "destination": "/api/index.py" },
-    { "source": "/", "destination": "/api/index.py" }
+    { "source": "/api/:path*", "destination": "/api/index.py?__route=/:path*" },
+    { "source": "/predict", "destination": "/api/index.py?__route=/predict" },
+    { "source": "/predict-(.*)", "destination": "/api/index.py?__route=/predict-$1" },
+    { "source": "/extension/:path*", "destination": "/api/index.py?__route=/extension/:path*" },
+    { "source": "/download-extension", "destination": "/api/index.py?__route=/download-extension" },
+    { "source": "/health", "destination": "/api/index.py?__route=/health" },
+    { "source": "/docs", "destination": "/api/index.py?__route=/docs" },
+    { "source": "/openapi.json", "destination": "/api/index.py?__route=/openapi.json" }
   ]
 }

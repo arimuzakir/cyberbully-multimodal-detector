@@ -23,8 +23,10 @@ import zipfile
 from contextlib import asynccontextmanager
 from typing import Optional
 
+import urllib.parse
+
 import pandas as pd
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -92,6 +94,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def fix_vercel_path_middleware(request: Request, call_next):
+    """
+    Menangani rewrite serverless Vercel:
+    Jika Vercel me-rewrite path ke '/api/index.py', ekstrak target asli dari query string
+    (__route atau path) dan sesuaikan scope['path'] sebelum routing FastAPI berjalan.
+    Juga menghandle pemanggilan dengan prefix '/api/'.
+    """
+    path = request.scope.get("path", "")
+    raw_qs = request.scope.get("query_string", b"").decode("utf-8")
+    
+    if path in ("/api/index.py", "/api/index.py/"):
+        qs_dict = urllib.parse.parse_qs(raw_qs)
+        if "__route" in qs_dict and qs_dict["__route"]:
+            request.scope["path"] = qs_dict["__route"][0]
+        elif "path" in qs_dict and qs_dict["path"]:
+            p = qs_dict["path"][0]
+            request.scope["path"] = "/" + p.lstrip("/")
+        else:
+            request.scope["path"] = "/"
+    elif path.startswith("/api/"):
+        sub_path = path[4:]
+        if sub_path:
+            request.scope["path"] = sub_path
+            
+    return await call_next(request)
+
+
 # ── Pydantic Models ───────────────────────────────────────────────────────────
 class TextRequest(BaseModel):
     text: str
@@ -131,6 +161,7 @@ def _enrich_result(result: dict, text: str, idx: int = 0) -> dict:
 # ── Endpoints ─────────────────────────────────────────────────────────────────
 
 @app.get("/health")
+@app.get("/api/health")
 async def health():
     return {
         "status":               "online",
@@ -145,6 +176,7 @@ async def health():
     }
 
 @app.post("/predict")
+@app.post("/api/predict")
 async def predict(req: TextRequest):
     if not req.text.strip():
         raise HTTPException(400, "Text kosong")
@@ -152,6 +184,7 @@ async def predict(req: TextRequest):
     return _enrich_result(result, req.text)
 
 @app.post("/predict-batch")
+@app.post("/api/predict-batch")
 async def predict_batch(req: BatchRequest):
     if not req.texts:
         raise HTTPException(400, "List texts kosong")
@@ -167,6 +200,7 @@ async def predict_batch(req: BatchRequest):
     }
 
 @app.post("/predict-pdf")
+@app.post("/api/predict-pdf")
 async def predict_pdf(file: UploadFile = File(...)):
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(400, "Hanya file PDF yang didukung")
@@ -190,6 +224,7 @@ async def predict_pdf(file: UploadFile = File(...)):
     }
 
 @app.post("/predict-excel")
+@app.post("/api/predict-excel")
 async def predict_excel(
     file: UploadFile = File(...),
     column: str = Form("text"),
@@ -232,6 +267,7 @@ async def predict_excel(
     }
 
 @app.post("/predict-url")
+@app.post("/api/predict-url")
 async def predict_url(req: URLRequest):
     if not req.url.strip():
         raise HTTPException(400, "URL kosong")
@@ -262,6 +298,7 @@ async def predict_url(req: URLRequest):
 # ── ENDPOINTS MULTIMODAL KHUSUS (AUDIO / IMAGE / VIDEO) ───────────────────────
 
 @app.post("/predict-audio")
+@app.post("/api/predict-audio")
 async def predict_audio(file: UploadFile = File(...)):
     """Menganalisis file audio untuk deteksi speech, nada akustik, dan trimodal stacking."""
     file_bytes = await file.read()
@@ -283,6 +320,7 @@ async def predict_audio(file: UploadFile = File(...)):
     return res
 
 @app.post("/predict-image")
+@app.post("/api/predict-image")
 async def predict_image(file: UploadFile = File(...)):
     """Menganalisis gambar/meme/screenshot dengan OCR dan visual classifier."""
     file_bytes = await file.read()
@@ -299,6 +337,7 @@ async def predict_image(file: UploadFile = File(...)):
     return res
 
 @app.post("/predict-video")
+@app.post("/api/predict-video")
 async def predict_video(file: UploadFile = File(...)):
     """Menganalisis file video secara Trimodal penuh: Keyframes + Audio Speech + Text Subtitles."""
     file_bytes = await file.read()
@@ -322,6 +361,7 @@ async def predict_video(file: UploadFile = File(...)):
     return res
 
 @app.post("/predict-multimodal")
+@app.post("/api/predict-multimodal")
 async def predict_multimodal(
     custom_text: Optional[str] = Form(None),
     audio_file: Optional[UploadFile] = File(None),
@@ -382,6 +422,7 @@ async def predict_multimodal(
 
 # ── Extension Real-Time Endpoint ──────────────────────────────────────────────
 @app.post("/extension/predict")
+@app.post("/api/extension/predict")
 async def extension_predict(req: ExtensionRequest):
     """Endpoint khusus untuk Chrome Extension — prediksi + broadcast ke WS clients."""
     result = model_loader.predict(req.text)
@@ -393,6 +434,7 @@ async def extension_predict(req: ExtensionRequest):
     return result
 
 @app.post("/predict-frame")
+@app.post("/api/predict-frame")
 async def predict_frame(req: FrameRequest):
     """Menerima snapshot frame video atau meme dalam format base64 dari Chrome Extension untuk deteksi Trimodal."""
     import base64
@@ -538,20 +580,7 @@ for s_dir in [os.path.join(os.getcwd(), "public"), FRONTEND_DIR]:
         except Exception:
             pass
 
-# ── Catch-All Debug & Fallback Route ──────────────────────────────────────────
-from fastapi import Request
-
-@app.api_route("/{full_path:path}", methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"])
-async def debug_catch_all(request: Request, full_path: str):
-    return JSONResponse({
-        "status": "catch_all_debug",
-        "method": request.method,
-        "url_path": request.url.path,
-        "scope_path": request.scope.get("path"),
-        "full_path": full_path,
-        "headers": dict(request.headers),
-        "query": dict(request.query_params)
-    }, status_code=404)
+# ── Run ───────────────────────────────────────────────────────────────────────
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
